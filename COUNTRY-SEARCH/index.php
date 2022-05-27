@@ -1,4 +1,1 @@
-<?php
-
-echo 'Hello, World!';
-
+<?php include 'inc/header.php' ?>
