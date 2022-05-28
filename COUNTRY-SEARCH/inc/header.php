@@ -1,3 +1,7 @@
+<?php declare(strict_types=1) ?>
+
+<?php include 'utils/logger.php' ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
