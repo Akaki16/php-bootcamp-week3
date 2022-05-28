@@ -6,7 +6,7 @@
     @param array $http_header
     @return array
 */
-function get_api_data(string $url, string $user_agent, array $http_header): array  {
+function get_api_data(string $url, string $user_agent, array $http_header)  {
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -20,6 +20,6 @@ function get_api_data(string $url, string $user_agent, array $http_header): arra
     if ($result === false) {
         echo 'Error' . ' ' . curl_error($ch);
     } else {
-        return json_decode($result, true);
+        return $result;
     }
 }
