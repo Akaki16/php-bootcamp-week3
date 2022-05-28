@@ -2,7 +2,7 @@
 
 /* define logger functions for debugging purposes */
 
-function print_array(array $arr): void {
+function print_array(null | array $arr): void {
     echo '<pre>';
     print_r($arr);
     echo '<pre>';
