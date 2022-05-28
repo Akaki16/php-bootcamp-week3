@@ -1,5 +1,23 @@
 <?php include 'inc/header.php' ?>
 
+<?php
+    $errors = [];
+
+    if (isset($_GET['search'])) {
+        $country_name = htmlspecialchars($_GET['country_name']);
+        
+        $country = get_api_data(
+            url: 'https://restcountries.com/v3.1/name/'.$country_name,
+            user_agent: '',
+            http_header: []
+        );
+
+        if (array_key_exists(0, $country)) {
+            echo $country[0]['name']['common'];
+        }
+    }
+?>
+
 <section class="relative w-full max-w-md px-5 py-4 mx-auto rounded-md">
     <br />
     <div class="relative">
@@ -10,7 +28,7 @@
         </span>
 
         <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']) ?>" method="GET" class="md:flex">
-            <input style="border-radius: 0px;" autocomplete="off" type="text" class="w-full py-3 pl-10 pr-4 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" placeholder="Enter a country name">
+            <input style="border-radius: 0px;" autocomplete="off" type="text" name="country_name" class="w-full py-3 pl-10 pr-4 text-gray-700 bg-white border rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" placeholder="Enter a country name">
 
             <button name="search" type="submit" style="border-radius: 0px;" class="px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-80">
                 Search
