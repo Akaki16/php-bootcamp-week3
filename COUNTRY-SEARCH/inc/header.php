@@ -2,6 +2,8 @@
 
 <?php include 'utils/logger.php' ?>
 
+<?php include 'utils/services.php' ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
