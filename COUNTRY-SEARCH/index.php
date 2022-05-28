@@ -6,15 +6,16 @@
     if (isset($_GET['search'])) {
         $country_name = htmlspecialchars($_GET['country_name']);
         
-        $country = get_api_data(
+        $country_json = get_api_data(
             url: 'https://restcountries.com/v3.1/name/'.$country_name,
             user_agent: '',
             http_header: []
         );
 
-        if (array_key_exists(0, $country)) {
-            echo $country[0]['name']['common'];
-        }
+        $country = json_decode($country_json, true);
+
+        print_array($country);
+
     }
 ?>
 
