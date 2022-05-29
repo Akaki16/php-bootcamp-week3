@@ -1,14 +1,16 @@
+<?php include 'credintials.php' ?>
+
 <?php
 
 /* MySQL database configuration */
-$db_host = 'localhost';
-$db_username = 'akaki';
-$db_password = 'akaki1234';
-$db_name = 'countries-db';
-$db_port = '8889';
+define('DB_HOST', getenv('db_host'));
+define('DB_USERNAME', getenv('db_username'));
+define('DB_PASSWORD', getenv('db_password'));
+define('DB_NAME', getenv('db_name'));
+define('DB_PORT', getenv('db_port'));
 
 // Connect to the MySQL database
-$conn = mysqli_connect($db_host, $db_username, $db_password, $db_name, $db_port);
+$conn = mysqli_connect(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME, DB_PORT);
 
 /* check database connection */
 // if ($conn->ping()) {
