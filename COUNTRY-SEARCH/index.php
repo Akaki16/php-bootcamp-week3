@@ -1,22 +1,65 @@
 <?php include 'inc/header.php' ?>
 
 <?php
-    $errors = [];
 
-    if (isset($_GET['search'])) {
-        $country_name = htmlspecialchars($_GET['country_name']);
-        
-        $country_json = get_api_data(
-            url: 'https://restcountries.com/v3.1/name/'.$country_name,
-            user_agent: '',
-            http_header: []
-        );
+$errors = [];
 
-        $country = json_decode($country_json, true);
+function wrap_str_quotes(string $str): string
+{
+    return '"' . trim($str, "''") . '"';
+}
 
-        print_array($country);
+if (isset($_GET['search'])) {
+    $country_name = htmlspecialchars($_GET['country_name']);
+    // this name will be used in SELECT statement
+    $country_name_to_query = wrap_str_quotes($country_name);
 
+    // check if country name contains alphabet characters
+    if (!ctype_alpha($country_name)) {
+        $errors['country_name'] = 'Please enter a country name using alphabet characters';
+    } else {
+        $errors['country_name'] = '';
     }
+
+    // store country names so later we will be able to compare them with user entered countries
+    $country_names = [];
+
+    // if country is not in db call an api
+    if (ctype_alpha($country_name)) {
+        if (!in_array(strtolower($country_name), $country_names)) {
+            $country = get_country_from_api();
+        }
+
+        if (!empty($country) && array_key_exists(0, $country)) {
+            $country_props = get_country_props($country);
+        }
+
+        $countries = get_countries_from_db();
+
+        for ($i = 0; $i < count($countries); $i++) {
+            array_push($country_names, strtolower($countries[$i]['name']));
+        }
+
+        if (!empty($country_props)) {
+            $country_name = strtolower($country_props['name']);
+            $country_population = $country_props['population'];
+            $country_capital = $country_props['capital'];
+            $country_region = $country_props['region'];
+            $country_subregion = $country_props['sub_region'];
+            $country_img_path = download_country_img($country_props);
+        }
+
+        // INSERT country information into db
+        if (!empty($country_props) && !in_array(strtolower($country_name), $country_names)) {
+            $sql = "INSERT INTO countries (name, population, capital, region, subregion, flag) VALUES ('$country_name', '$country_population', '$country_capital', '$country_region', '$country_subregion', '$country_img_path')";
+
+            $result = mysqli_query($conn, $sql);
+        }
+
+        $country_data = get_country_from_db();
+    }
+}
+
 ?>
 
 <section class="relative w-full max-w-md px-5 py-4 mx-auto rounded-md">
@@ -38,4 +81,36 @@
     </div>
 </section>
 
+<?php if (!empty($errors['country_name'])) : ?>
+    <div class="flex w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <div class="flex items-center justify-center w-12 bg-red-500">
+            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 3.36667C10.8167 3.36667 3.3667 10.8167 3.3667 20C3.3667 29.1833 10.8167 36.6333 20 36.6333C29.1834 36.6333 36.6334 29.1833 36.6334 20C36.6334 10.8167 29.1834 3.36667 20 3.36667ZM19.1334 33.3333V22.9H13.3334L21.6667 6.66667V17.1H27.25L19.1334 33.3333Z" />
+            </svg>
+        </div>
+
+        <div class="px-4 py-2 -mx-3">
+            <div class="mx-3">
+                <span class="font-semibold text-red-500 dark:text-red-400">Alert</span>
+                <p class="text-sm text-gray-600 dark:text-gray-200">
+                    <?php echo $errors['country_name'] ?>
+                </p>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<br />
+
+<!-- <?php if (isset($country_data)): ?>
+    <div class="max-w-xs mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
+        <img class="object-cover w-full h-56" src="<?php echo $country_data[6] . '.' . 'png' ?>" alt="avatar">
+        
+        <div class="py-5 text-center">
+            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">John Doe</a>
+            <span class="text-sm text-gray-700 dark:text-gray-200">Software Engineer</span>
+        </div>
+    </div>
+<?php endif; ?> -->
+            
 <?php include 'inc/footer.php' ?>
