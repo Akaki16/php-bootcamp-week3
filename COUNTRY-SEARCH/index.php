@@ -16,7 +16,7 @@ if (isset($_GET['search'])) {
 
     // check if country name contains alphabet characters
     if (!ctype_alpha($country_name)) {
-        $errors['country_name'] = 'Please enter a country name using alphabet characters';
+        $errors['country_name'] = 'Please enter a country name and use alphabet characters';
     } else {
         $errors['country_name'] = '';
     }
@@ -24,8 +24,8 @@ if (isset($_GET['search'])) {
     // store country names so later we will be able to compare them with user entered countries
     $country_names = [];
 
-    // if country is not in db call an api
     if (ctype_alpha($country_name)) {
+        // if country is not in db call an api
         if (!in_array(strtolower($country_name), $country_names)) {
             $country = get_country_from_api();
         }
@@ -48,8 +48,7 @@ if (isset($_GET['search'])) {
             $country_subregion = $country_props['sub_region'];
             $country_img_path = download_country_img($country_props);
         }
-
-        // INSERT country information into db
+        
         if (!empty($country_props) && !in_array(strtolower($country_name), $country_names)) {
             $sql = "INSERT INTO countries (name, population, capital, region, subregion, flag) VALUES ('$country_name', '$country_population', '$country_capital', '$country_region', '$country_subregion', '$country_img_path')";
 
@@ -102,15 +101,43 @@ if (isset($_GET['search'])) {
 
 <br />
 
-<!-- <?php if (isset($country_data)): ?>
+<?php if (isset($country_data)): ?>
     <div class="max-w-xs mx-auto overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-        <img class="object-cover w-full h-56" src="<?php echo $country_data[6] . '.' . 'png' ?>" alt="avatar">
+        <img class="object-cover w-full h-56" src="<?php echo $country_data[6] . '.' . 'png' ?>" alt="<?php echo $country_data[1] ?>">
         
         <div class="py-5 text-center">
-            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">John Doe</a>
-            <span class="text-sm text-gray-700 dark:text-gray-200">Software Engineer</span>
+            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">
+                Population
+            </a>
+            <span class="text-sm text-gray-700 dark:text-gray-200">
+                <?php echo $country_data[2] ?>
+            </span>
+        </div>
+        <div class="py-5 text-center">
+            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">
+                Capital
+            </a>
+            <span class="text-sm text-gray-700 dark:text-gray-200">
+                <?php echo $country_data[3] ?>
+            </span>
+        </div>
+        <div class="py-5 text-center">
+            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">
+                Region
+            </a>
+            <span class="text-sm text-gray-700 dark:text-gray-200">
+                <?php echo $country_data[4] ?>
+            </span>
+        </div>
+        <div class="py-5 text-center">
+            <a href="#" class="block text-2xl font-bold text-gray-800 dark:text-white">
+                Subregion
+            </a>
+            <span class="text-sm text-gray-700 dark:text-gray-200">
+                <?php echo $country_data[5] ?>
+            </span>
         </div>
     </div>
-<?php endif; ?> -->
+<?php endif; ?>
             
 <?php include 'inc/footer.php' ?>
