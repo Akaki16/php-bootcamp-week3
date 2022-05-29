@@ -4,6 +4,8 @@
 
 <?php include 'utils/services.php' ?>
 
+<?php include 'utils/config.php' ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
