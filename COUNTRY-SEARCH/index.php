@@ -48,8 +48,7 @@ if (isset($_GET['search'])) {
             $country_subregion = $country_props['sub_region'];
             $country_img_path = download_country_img($country_props);
         }
-
-        // INSERT country information into db
+        
         if (!empty($country_props) && !in_array(strtolower($country_name), $country_names)) {
             $sql = "INSERT INTO countries (name, population, capital, region, subregion, flag) VALUES ('$country_name', '$country_population', '$country_capital', '$country_region', '$country_subregion', '$country_img_path')";
 
